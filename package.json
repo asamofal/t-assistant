@@ -13,7 +13,9 @@
     "dist",
     "src"
   ],
-  "bin": "dist/index.js",
+  "bin": {
+    "t-assistant": "dist/index.js"
+  },
   "type": "module",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
