@@ -16,7 +16,7 @@ program
   .version(version);
 
 program
-  .option('-s, --src <src>', 'Glob pattern for source file paths')
+  .option('-s, --src <src...>', 'Glob pattern for source file paths')
   .option('-o, --out-dir <dir>', 'JSON locale files path')
   .option('-e, --exclude <exclude>', 'Glob pattern for paths to exclude')
   .option('-l, --locales <locales...>', 'List of locales', ['en'])
