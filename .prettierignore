@@ -1,0 +1,10 @@
+**/node_modules
+**/dist
+
+eslint.config.js
+
+package.json
+package-lock.json
+
+.github
+.idea
