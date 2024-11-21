@@ -13,13 +13,10 @@ export const save = (locales: string[], keys: Set<string>, outDir: string) => {
     try {
       existingTranslations = JSON.parse(fs.readFileSync(localeFilePath, 'utf-8'));
     } catch {
-      printWarning(
-        `Failed to parse ${chalk.blue(localeFilePath)}. Create a new one.`,
-        {
-          newLinesBefore: 1,
-          newLinesAfter: 1,
-        },
-      );
+      printWarning(`Failed to parse ${chalk.blue(localeFilePath)}. Create a new one.`, {
+        newLinesBefore: 1,
+        newLinesAfter: 1,
+      });
     }
 
     const allExistingKeys = Object.keys(existingTranslations);

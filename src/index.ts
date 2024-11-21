@@ -55,9 +55,8 @@ program
 
       const end = performance.now();
       const executionTime = (end - start).toFixed(2);
-      print(
-        `${chalk.green('🚀 Translations updated')} ` + chalk.italic(`(${executionTime}ms)`),
-      );
+
+      print(`${chalk.green('🚀 Translations updated')} ` + chalk.italic(`(${executionTime}ms)`));
     } catch (e: unknown) {
       const error = e as Error;
 
