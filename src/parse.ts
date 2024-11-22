@@ -5,6 +5,7 @@ export const parse = async (
   src: string[],
   exclude: string[],
   keywords: string[],
+  keyPrefix: Record<string, string> = {},
 ): Promise<Set<string>> => {
   const keys: Set<string> = new Set();
 
@@ -32,7 +33,13 @@ export const parse = async (
         regex.lastIndex++;
       }
 
-      const translationKey = match[3] as string;
+      let translationKey = match[3] as string;
+
+      const translationFunction = match[1] as string;
+      if (translationFunction in keyPrefix) {
+        translationKey = `${keyPrefix[translationFunction]}${translationKey}`;
+      }
+
       keys.add(translationKey);
     }
   }

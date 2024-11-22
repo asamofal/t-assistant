@@ -23,6 +23,7 @@ program
   .option('-k, --keywords <keywords...>', 'List of translation keys', ['t', '$t'])
   .option('-c, --config <config>', 'Path to a config file')
   .option('-d, --debug', 'Print debug information')
+  // keyPrefix option is available only from the config file
   .action(async (options) => {
     if (options.config) {
       applyOptionsFromConfig(program, options.config);
@@ -35,7 +36,7 @@ program
     try {
       const start = performance.now();
 
-      const { src, outDir, exclude, locales, keywords } = program.opts();
+      const { src, outDir, exclude, locales, keywords, keyPrefix } = program.opts();
 
       // validate required options
       if (!src) {
@@ -48,7 +49,7 @@ program
       }
 
       // parse source files and collect translations
-      const keys = await parse(src, exclude, keywords);
+      const keys = await parse(src, exclude, keywords, keyPrefix);
 
       // merge translations to JSON files
       save(locales, keys, outDir);

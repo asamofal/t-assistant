@@ -19,6 +19,9 @@ export const applyOptionsFromConfig = (program: Command, configPath: string) => 
     if (config.keywords) {
       program.setOptionValueWithSource('keywords', config.keywords, 'config');
     }
+    if (config.keyPrefix) {
+      program.setOptionValueWithSource('keyPrefix', config.keyPrefix, 'config');
+    }
   } catch (e: unknown) {
     throw new Error(`Unable to read the config file: ${(e as Error).message}`);
   }
