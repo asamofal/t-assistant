@@ -28,7 +28,7 @@ export const save = (locales: string[], keys: Set<string>, outDir: string) => {
     // delete keys that now found in the sources
     deletedKeys.forEach((key) => delete existingTranslations[key]);
 
-    let final = { ...existingTranslations, ...freshTranslations };
+    let final = { ...freshTranslations, ...existingTranslations };
     // sort alphabetically to have the same order always
     final = Object.fromEntries(Object.entries(final).sort((a, b) => a[0].localeCompare(b[0])));
 
