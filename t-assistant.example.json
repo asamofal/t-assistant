@@ -1,0 +1,10 @@
+{
+  "src": ["packages/**/*.{js,ts,vue}"],
+  "outDir": "resources/locales",
+  "exclude": "**/dist/*",
+  "locales": ["en", "ua"],
+  "keywords": ["t", "$t"],
+  "keyPrefix": {
+    "__mc": "mailcoach."
+  }
+}
