@@ -2,7 +2,7 @@
   "name": "t-assistant",
   "description": "A blazing fast, lightweight tool for i18n: manage translation keys with ease.",
   "license": "MIT",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "repository": "github:asamofal/t-assistant",
   "author": {
     "name": "Anton Samofal",
