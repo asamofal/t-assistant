@@ -1,5 +1,12 @@
 # t-assistant
 
+## 0.0.8
+
+### Patch Changes
+
+- e1bb1fb: Update README: add badges, add key-features
+- 077bdf7: Add package keywords
+
 ## 0.0.7
 
 ### Patch Changes
