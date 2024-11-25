@@ -1,6 +1,14 @@
 # t-assistant
 
+![NPM Version](https://img.shields.io/npm/v/t-assistant)
+![CI status](https://github.com/asamofal/t-assistant/actions/workflows/ci.yml/badge.svg?branch=master)
+![NPM Downloads](https://img.shields.io/npm/dm/t-assistant)
+
 A blazing fast, lightweight tool for i18n: manage translation keys with ease.
+
+- ☁️ **Lightweight**: Minimal dependencies.
+- ⚡ **Performant**: Supports simultaneous file parsing.
+- ♻️ **git-friendly**: Maintains key persistence with alphabetic sorting, ensuring your git history reflects only actual changes.  
 
 ## Installation
 
