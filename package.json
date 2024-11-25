@@ -4,6 +4,7 @@
   "license": "MIT",
   "version": "0.0.7",
   "repository": "github:asamofal/t-assistant",
+  "keywords": ["translations", "i18n", "json", "locales", "lang", "language", "internalization"],
   "author": {
     "name": "Anton Samofal",
     "email": "anton.smfl@gmail.com",
