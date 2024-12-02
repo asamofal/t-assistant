@@ -67,7 +67,7 @@ t-assistant -s "src/**/*.ts" -o "locales" -l "en" "fr" -k "t" "$t"
 
 ## Credits
 
-Special thanks to @AlexAzartsev for the original idea and inspiration behind this tool!
+Special thanks to [@AlexAzartsev](https://github.com/AlexAzartsev) for the original idea and inspiration behind this tool!
 
 ## License
 
