@@ -65,6 +65,10 @@ Extract translation keys from source files and save them to JSON files:
 t-assistant -s "src/**/*.ts" -o "locales" -l "en" "fr" -k "t" "$t"
 ```
 
+## Credits
+
+Special thanks to @AlexAzartsev for the original idea and inspiration behind this tool!
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
