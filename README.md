@@ -15,7 +15,7 @@ A blazing fast, lightweight tool for i18n: manage translation keys with ease.
 You can install `t-assistant` using npm:
 
 ```sh
-npm install -g t-assistant
+npm install -D t-assistant
 ```
 
 ## Usage
