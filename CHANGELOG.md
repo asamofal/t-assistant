@@ -1,5 +1,11 @@
 # t-assistant
 
+## 0.1.1
+
+### Patch Changes
+
+- Add support for new lines in the second parameter
+
 ## 0.1.0
 
 ### Minor Changes
