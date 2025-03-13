@@ -23,7 +23,7 @@ export const parse = async (
   });
   for (const fileContent of fileContents) {
     const regex = new RegExp(
-      `(?<!\\w)(${escapedKeywords.join('|')})\\(\\s*(['"])(.+?)\\2\\s*\\)`,
+      `(?<!\\w)(${escapedKeywords.join('|')})\\(\\s*(['"])(.+?)\\2\\s*(?:,\\s*(.+?))?\\s*\\)`,
       'gm',
     );
 
