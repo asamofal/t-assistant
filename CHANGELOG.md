@@ -1,5 +1,11 @@
 # t-assistant
 
+## 0.1.0
+
+### Minor Changes
+
+- Add support for the second optional parameter in translation function
+
 ## 0.0.8
 
 ### Patch Changes
