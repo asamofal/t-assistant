@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    // tsup hardcodes baseUrl in its dts worker, which TS 6 rejects as deprecated
+    "ignoreDeprecations": "6.0",
     "allowSyntheticDefaultImports": true,
     "module": "ESNext",
     "target": "ESNext",
@@ -10,7 +12,6 @@
     "noUncheckedIndexedAccess": true,
     "isolatedModules": true,
     "types": ["node"],
-    "baseUrl": ".",
     "noEmit": true,
     "resolveJsonModule": true,
     "moduleDetection": "force"

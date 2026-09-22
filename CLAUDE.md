@@ -7,13 +7,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```sh
 npm run dev      # tsup watch build (esm + dts)
 npm run build    # tsup build to dist/
-npm run lint     # tsc --noEmit + eslint — this is the CI gate
-npm run format   # prettier --write
+npm run lint     # tsc --noEmit + oxlint — this is the CI gate
+npm run format   # oxfmt
 ```
 
 There is no test suite and no test runner installed. `tsconfig.json` excludes `**/*.test.ts`, so tests were anticipated but never added — if you add any, wire up a runner and a `test` script first.
 
-To exercise the CLI locally against a real project: `node dist/index.js -c t-assistant.json extract` (build first), or `npx tsx src/index.ts ...`.
+To exercise the CLI locally against a real project: `node dist/index.js -c t-assistant.json` (build first), or `npx tsx src/index.ts ...`.
 
 ## Architecture
 
@@ -31,9 +31,20 @@ Errors bubble to the single try/catch in `index.ts`, which prints the message (p
 
 ## Gotchas
 
-- `glob` is imported in `src/parse.ts` but is **not** listed in `package.json` dependencies — it currently resolves only as a transitive dep of `tsup` (a devDependency). Installed packages will break at runtime. Add it to `dependencies` if you touch that area.
 - `version` is imported from `../package.json` with `resolveJsonModule`; tsup inlines it into the bundle.
-- The README documents a `command` argument (`t-assistant [options] extract`) but commander defines no subcommands — `extract` is accepted and ignored.
+
+## TypeScript 6
+
+`tsconfig.json` sets `"ignoreDeprecations": "6.0"`. This is not about our own config — `baseUrl` was removed from it. tsup's dts worker hardcodes `baseUrl: compilerOptions.baseUrl || "."` (`node_modules/tsup/dist/rollup.js`), which TS 6 errors on as deprecated, so `npm run build` fails without it while `tsc` alone passes. Drop the flag once tsup stops injecting `baseUrl`; TS 7 will refuse it outright.
+
+## Linting & formatting
+
+`oxlint` (`.oxlintrc.json`) and `oxfmt` (`.oxfmtrc.json`) replaced ESLint and Prettier. Both configs mirror the shared setup used in other projects — keep them in sync rather than tuning locally. Notes:
+
+- `plugins: ["typescript"]` replaces oxlint's default plugin set, so `unicorn`/`oxc` rules are intentionally not active.
+- `no-unnecessary-type-parameters` needs type information; without the `oxlint-tsgolint` package it is accepted but inert. It is not installed because `tsc` already runs in `lint`.
+- `preserve-caught-error` is the one addition over the shared config — it caught a real bug in `loadConfig.ts`.
+- `dist` and `node_modules` are skipped through `.gitignore`, which both tools read by default; `*.md`, `package.json` and `.github` are excluded from formatting explicitly.
 
 ## Release
 
