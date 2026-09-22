@@ -21,7 +21,8 @@
   "private": false,
   "files": [
     "dist",
-    "src"
+    "src",
+    "!src/**/*.test.ts"
   ],
   "bin": {
     "t-assistant": "dist/index.js"
@@ -36,6 +37,7 @@
     "dev": "tsup src/index.ts --watch --format esm --dts",
     "build": "tsup src/index.ts --format esm --dts",
     "release": "npm run build && changeset publish",
+    "test": "node --test --experimental-strip-types \"src/**/*.test.ts\"",
     "lint": "tsc && oxlint",
     "format": "oxfmt"
   },
