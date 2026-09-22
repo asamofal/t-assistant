@@ -2,6 +2,29 @@
 
 ## 0.2.0
 
+### Breaking Changes
+
+**The `extract` argument was removed — drop it from your scripts.**
+
+If your command still passes it, the CLI now fails with:
+
+```
+error: too many arguments. Expected 0 arguments but got 1: extract.
+```
+
+Remove `extract` from the command:
+
+```diff
+  "scripts": {
+-   "translate": "t-assistant -c t-assistant.json extract",
++   "translate": "t-assistant -c t-assistant.json",
+  }
+```
+
+`extract` was never implemented — it was silently ignored by Commander 12, and Commander 15 rejects undeclared arguments. Nothing else about the invocation changes.
+
+Node.js >= 22.12.0 is now required.
+
 ### Minor Changes
 
 - 95df2fe: Update all dependencies, replace ESLint/Prettier with oxlint/oxfmt, and require Node.js >= 22.12.0
@@ -9,7 +32,6 @@
   - add `glob` to dependencies (it was imported but only resolved transitively)
   - bump `chalk` to 6, `commander` to 15, `typescript` to 6
   - replace ESLint and Prettier with `oxlint` and `oxfmt`
-  - drop the unused `extract` argument: call `t-assistant -c t-assistant.json` without it
 
 ## 0.1.1
 

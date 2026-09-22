@@ -37,6 +37,9 @@ Then it can be called with: `npm run translate`.
 }
 ```
 
+> [!IMPORTANT]
+> Upgrading from `0.1.x`? Drop the `extract` argument from your command — it was never implemented and is now rejected with `error: too many arguments`. See the [changelog](CHANGELOG.md#020).
+
 ## Options
 
 **t-assistant** supports two ways to provide options: via CLI parameters or a config file. 
