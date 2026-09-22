@@ -1,22 +1,28 @@
 import chalk from 'chalk';
 import path from 'node:path';
 import fs from 'node:fs';
-import { printWarning } from './utils/print';
+import { printWarning } from './utils/print.ts';
 
 export const save = (locales: string[], keys: Set<string>, outDir: string) => {
   const freshTranslations = Object.fromEntries(keys.entries());
+
+  fs.mkdirSync(outDir, { recursive: true });
 
   for (const locale of locales) {
     const localeFilePath = path.join(outDir, `${locale}.json`);
 
     let existingTranslations: Record<string, string> = {};
-    try {
-      existingTranslations = JSON.parse(fs.readFileSync(localeFilePath, 'utf-8'));
-    } catch {
-      printWarning(`Failed to parse ${chalk.blue(localeFilePath)}. Create a new one.`, {
-        newLinesBefore: 1,
-        newLinesAfter: 1,
-      });
+    if (fs.existsSync(localeFilePath)) {
+      try {
+        existingTranslations = JSON.parse(fs.readFileSync(localeFilePath, 'utf-8'));
+      } catch (e: unknown) {
+        // keep going with an empty set, but the existing translations are lost
+        printWarning(
+          `Failed to parse ${chalk.blue(localeFilePath)}: ${(e as Error).message}. ` +
+            'Its translations will be recreated as empty.',
+          { newLinesBefore: 1, newLinesAfter: 1 },
+        );
+      }
     }
 
     const allExistingKeys = Object.keys(existingTranslations);
