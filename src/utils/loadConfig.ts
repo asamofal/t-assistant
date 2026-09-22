@@ -23,6 +23,6 @@ export const applyOptionsFromConfig = (program: Command, configPath: string) => 
       program.setOptionValueWithSource('keyPrefix', config.keyPrefix, 'config');
     }
   } catch (e: unknown) {
-    throw new Error(`Unable to read the config file: ${(e as Error).message}`);
+    throw new Error(`Unable to read the config file: ${(e as Error).message}`, { cause: e });
   }
 };

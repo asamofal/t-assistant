@@ -12,6 +12,8 @@ A blazing fast, lightweight tool for i18n: manage translation keys with ease.
 
 ## Installation
 
+Requires Node.js 22.12 or newer.
+
 You can install `t-assistant` using npm:
 
 ```sh
