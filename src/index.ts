@@ -2,11 +2,11 @@
 
 import { Command } from 'commander';
 import { version } from '../package.json';
-import { parse } from './parse';
+import { parse } from './parse.ts';
 import chalk from 'chalk';
-import { save } from './save';
-import { print, printDebug, printError } from './utils/print';
-import { applyOptionsFromConfig } from './utils/loadConfig';
+import { save } from './save.ts';
+import { print, printDebug, printError } from './utils/print.ts';
+import { applyOptionsFromConfig } from './utils/loadConfig.ts';
 
 const program = new Command();
 
@@ -25,15 +25,15 @@ program
   .option('-d, --debug', 'Print debug information')
   // keyPrefix option is available only from the config file
   .action(async (options) => {
-    if (options.config) {
-      applyOptionsFromConfig(program, options.config);
-    }
-
     if (options.debug) {
       printDebug(`Options: ${JSON.stringify(options)}`);
     }
 
     try {
+      if (options.config) {
+        applyOptionsFromConfig(program, options.config);
+      }
+
       const start = performance.now();
 
       const { src, outDir, exclude, locales, keywords, keyPrefix } = program.opts();

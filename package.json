@@ -37,7 +37,7 @@
     "dev": "tsup src/index.ts --watch --format esm --dts",
     "build": "tsup src/index.ts --format esm --dts",
     "release": "npm run build && changeset publish",
-    "test": "node --test --experimental-strip-types \"src/**/*.test.ts\"",
+    "test": "node --test --experimental-strip-types",
     "lint": "tsc && oxlint",
     "format": "oxfmt"
   },
