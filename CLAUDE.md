@@ -13,7 +13,7 @@ npm run format   # oxfmt
 
 There is no test suite and no test runner installed. `tsconfig.json` excludes `**/*.test.ts`, so tests were anticipated but never added — if you add any, wire up a runner and a `test` script first.
 
-To exercise the CLI locally against a real project: `node dist/index.js -c t-assistant.json extract` (build first), or `npx tsx src/index.ts ...`.
+To exercise the CLI locally against a real project: `node dist/index.js -c t-assistant.json` (build first), or `npx tsx src/index.ts ...`.
 
 ## Architecture
 
@@ -32,7 +32,6 @@ Errors bubble to the single try/catch in `index.ts`, which prints the message (p
 ## Gotchas
 
 - `version` is imported from `../package.json` with `resolveJsonModule`; tsup inlines it into the bundle.
-- The README documents a `command` argument (`t-assistant [options] extract`). It is declared via `.argument('[command]')` purely so that documented invocation keeps working — the value is ignored. Because an argument is declared, the action handler receives it first: `(_command, options)`.
 
 ## TypeScript 6
 

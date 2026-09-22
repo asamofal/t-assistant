@@ -25,7 +25,7 @@ npm install -D t-assistant
 For now the primary use of `t-assistant` is to extract translation keys from source files and write them to JSON files.
 
 ```sh
-t-assistant [options] command
+t-assistant [options]
 ```
 
 The recommended way is to create a [config file](t-assistant.example.json) and set up the npm command in `package.json`.
@@ -33,7 +33,7 @@ Then it can be called with: `npm run translate`.
 ```bash
 ...
 "scripts": {
-  "translate": "t-assistant -c t-assistant.json extract",
+  "translate": "t-assistant -c t-assistant.json",
 }
 ```
 

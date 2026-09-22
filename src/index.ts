@@ -13,7 +13,6 @@ const program = new Command();
 program
   .name('t-key-assistant')
   .description('Extract translation keys from source files and write them to JSON files.')
-  .argument('[command]', 'accepted for backwards compatibility, ignored')
   .version(version);
 
 program
@@ -25,7 +24,7 @@ program
   .option('-c, --config <config>', 'Path to a config file')
   .option('-d, --debug', 'Print debug information')
   // keyPrefix option is available only from the config file
-  .action(async (_command, options) => {
+  .action(async (options) => {
     if (options.config) {
       applyOptionsFromConfig(program, options.config);
     }
