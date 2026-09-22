@@ -23,7 +23,8 @@ export const parse = async (
   });
   for (const fileContent of fileContents) {
     const regex = new RegExp(
-      `(?<!\\w)(${escapedKeywords.join('|')})\\(\\s*(['"])(.+?)\\2\\s*(?:,\\s*([\\s\\S]+?))?\\s*\\)`,
+      // the alternation keeps each quote style bounded to its own literal
+      `(?<!\\w)(${escapedKeywords.join('|')})\\(\\s*(?:'((?:\\\\.|[^'\\\\\\n])*)'|"((?:\\\\.|[^"\\\\\\n])*)"|\`((?:\\\\.|[^\`\\\\])*)\`)`,
       'gm',
     );
 
@@ -33,7 +34,7 @@ export const parse = async (
         regex.lastIndex++;
       }
 
-      let translationKey = match[3] as string;
+      let translationKey = (match[2] ?? match[3] ?? match[4]) as string;
 
       const translationFunction = match[1] as string;
       if (translationFunction in keyPrefix) {

@@ -28,6 +28,14 @@ export const save = (locales: string[], keys: Set<string>, outDir: string) => {
     // delete keys that now found in the sources
     deletedKeys.forEach((key) => delete existingTranslations[key]);
 
+    if (deletedKeys.length > 0) {
+      const keyList = deletedKeys.map((key) => `  - ${chalk.red(key)}`).join('\n');
+      printWarning(
+        `Removing ${deletedKeys.length} key(s) from ${chalk.blue(localeFilePath)}:\n${keyList}`,
+        { newLinesBefore: 1, newLinesAfter: 1 },
+      );
+    }
+
     let final = { ...freshTranslations, ...existingTranslations };
     // sort alphabetically to have the same order always
     final = Object.fromEntries(Object.entries(final).sort((a, b) => a[0].localeCompare(b[0])));
