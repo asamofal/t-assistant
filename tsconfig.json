@@ -1,7 +1,5 @@
 {
   "compilerOptions": {
-    // tsup hardcodes baseUrl in its dts worker, which TS 6 rejects as deprecated
-    "ignoreDeprecations": "6.0",
     "allowSyntheticDefaultImports": true,
     "allowImportingTsExtensions": true,
     "module": "ESNext",

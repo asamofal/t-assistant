@@ -20,9 +20,7 @@
   },
   "private": false,
   "files": [
-    "dist",
-    "src",
-    "!src/**/*.test.ts"
+    "dist"
   ],
   "bin": {
     "t-assistant": "dist/index.js"
@@ -31,11 +29,9 @@
   "engines": {
     "node": ">=22.12.0"
   },
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
   "scripts": {
-    "dev": "tsup src/index.ts --watch --format esm --dts",
-    "build": "tsup src/index.ts --format esm --dts",
+    "dev": "tsup src/index.ts --watch --format esm",
+    "build": "tsup src/index.ts --format esm",
     "release": "npm run build && changeset publish",
     "test": "node --test --experimental-strip-types",
     "lint": "tsc && oxlint",
