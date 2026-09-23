@@ -14,7 +14,7 @@ const SIMPLE_ESCAPES: Record<string, string> = {
 // resolve escape sequences, so the key matches the string `t()` receives at runtime
 const unescapeKey = (rawKey: string): string => {
   return rawKey.replace(
-    /\\(?:u\{([0-9a-fA-F]+)\}|u([0-9a-fA-F]{4})|x([0-9a-fA-F]{2})|([\s\S]))/g,
+    /\\(?:u\{([0-9a-fA-F]+)\}|u([0-9a-fA-F]{4})|x([0-9a-fA-F]{2})|([\s\S]))/gu,
     (_match, codePoint?: string, unicode?: string, hex?: string, char = '') => {
       const hexCode = codePoint ?? unicode ?? hex;
       if (hexCode !== undefined) {
