@@ -1,6 +1,33 @@
 import { glob } from 'glob';
 import fs from 'node:fs';
 
+const SIMPLE_ESCAPES: Record<string, string> = {
+  b: '\b',
+  f: '\f',
+  n: '\n',
+  r: '\r',
+  t: '\t',
+  v: '\v',
+  0: '\0',
+};
+
+// resolve escape sequences, so the key matches the string `t()` receives at runtime
+const unescapeKey = (rawKey: string): string => {
+  return rawKey.replace(
+    /\\(?:u\{([0-9a-fA-F]+)\}|u([0-9a-fA-F]{4})|x([0-9a-fA-F]{2})|([\s\S]))/g,
+    (_match, codePoint?: string, unicode?: string, hex?: string, char = '') => {
+      const hexCode = codePoint ?? unicode ?? hex;
+      if (hexCode !== undefined) {
+        return String.fromCodePoint(parseInt(hexCode, 16));
+      }
+
+      return SIMPLE_ESCAPES[char] ?? char;
+    },
+  );
+};
+
+const hasInterpolation = (templateKey: string): boolean => /(?<!\\)\$\{/.test(templateKey);
+
 export const parse = async (
   src: string[],
   exclude: string[],
@@ -37,7 +64,12 @@ export const parse = async (
         regex.lastIndex++;
       }
 
-      let translationKey = (match[2] ?? match[3] ?? match[4]) as string;
+      const templateKey = match[4];
+      if (templateKey !== undefined && hasInterpolation(templateKey)) {
+        continue;
+      }
+
+      let translationKey = unescapeKey((match[2] ?? match[3] ?? templateKey) as string);
 
       const translationFunction = match[1] as string;
       if (translationFunction in keyPrefix) {
