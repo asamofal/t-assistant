@@ -201,6 +201,33 @@ describe('file collection', () => {
     assert.deepEqual([...keys], ['Kept']);
   });
 
+  it('accepts a single exclude pattern as a string', async () => {
+    const dir = fs.mkdtempSync(path.join(tmpRoot, 'exclude-string-'));
+    fs.writeFileSync(path.join(dir, 'kept.ts'), `$t('Kept')`);
+    fs.mkdirSync(path.join(dir, 'dist'));
+    fs.writeFileSync(path.join(dir, 'dist', 'skipped.ts'), `$t('Skipped')`);
+
+    const keys = await parse([path.join(dir, '**/*.ts')], '**/dist/**', ['t', '$t']);
+
+    assert.deepEqual([...keys], ['Kept']);
+  });
+
+  it('honours several exclude patterns', async () => {
+    const dir = fs.mkdtempSync(path.join(tmpRoot, 'exclude-many-'));
+    fs.writeFileSync(path.join(dir, 'kept.ts'), `$t('Kept')`);
+    fs.mkdirSync(path.join(dir, 'dist'));
+    fs.writeFileSync(path.join(dir, 'dist', 'skipped.ts'), `$t('Skipped')`);
+    fs.writeFileSync(path.join(dir, 'kept.spec.ts'), `$t('Spec')`);
+
+    const keys = await parse(
+      [path.join(dir, '**/*.ts')],
+      ['**/dist/**', '**/*.spec.ts'],
+      ['t', '$t'],
+    );
+
+    assert.deepEqual([...keys], ['Kept']);
+  });
+
   it('collects keys across several files', async () => {
     const dir = fs.mkdtempSync(path.join(tmpRoot, 'multi-'));
     fs.writeFileSync(path.join(dir, 'a.ts'), `$t('FromA')`);

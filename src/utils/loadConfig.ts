@@ -34,7 +34,8 @@ export const applyOptionsFromConfig = (program: Command, configPath: string) => 
   }
 
   for (const option of KNOWN_OPTIONS) {
-    if (config[option] !== undefined) {
+    // CLI flags take precedence over the config file
+    if (config[option] !== undefined && program.getOptionValueSource(option) !== 'cli') {
       program.setOptionValueWithSource(option, config[option], 'config');
     }
   }

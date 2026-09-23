@@ -30,7 +30,7 @@ const hasInterpolation = (templateKey: string): boolean => /(?<!\\)\$\{/.test(te
 
 export const parse = async (
   src: string[],
-  exclude: string[],
+  exclude: string | string[] = [],
   keywords: string[],
   keyPrefix: Record<string, string> = {},
 ): Promise<Set<string>> => {
