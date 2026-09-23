@@ -49,8 +49,10 @@ export const save = (locales: string[], keys: Set<string>, outDir: string) => {
     }
 
     let final = { ...freshTranslations, ...existingTranslations };
-    // sort alphabetically to have the same order always
-    final = Object.fromEntries(Object.entries(final).sort((a, b) => a[0].localeCompare(b[0])));
+    // sort alphabetically to have the same order always, regardless of the system locale
+    final = Object.fromEntries(
+      Object.entries(final).sort((a, b) => a[0].localeCompare(b[0], 'en')),
+    );
 
     fs.writeFileSync(localeFilePath, JSON.stringify(final, null, 2) + '\n');
 

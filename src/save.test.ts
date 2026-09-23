@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -74,6 +75,25 @@ describe('merging', () => {
     save(['en'], new Set(['b', 'Zebra', 'apple']), outDir);
 
     assert.deepEqual(Object.keys(readLocale(outDir, 'en')), ['apple', 'b', 'Zebra']);
+  });
+
+  it('sorts keys the same way regardless of the system locale', () => {
+    const outDir = makeOutDir();
+    const script = `
+      import { save } from ${JSON.stringify(import.meta.resolve('./save.ts'))};
+      save(['en'], new Set(['Øre', 'Zebra', 'ä', 'apple', 'Ole']), ${JSON.stringify(outDir)});
+    `;
+
+    execFileSync(
+      process.execPath,
+      ['--experimental-strip-types', '--input-type=module', '-e', script],
+      {
+        env: { ...process.env, LANG: 'nb_NO.UTF-8', LC_ALL: 'nb_NO.UTF-8' },
+        stdio: 'ignore',
+      },
+    );
+
+    assert.deepEqual(Object.keys(readLocale(outDir, 'en')), ['ä', 'apple', 'Ole', 'Øre', 'Zebra']);
   });
 
   it('ends the file with a newline', () => {
