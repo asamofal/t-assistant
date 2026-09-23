@@ -39,7 +39,7 @@ program
       const { src, outDir, exclude, locales, keywords, keyPrefix } = program.opts();
 
       // validate required options
-      if (!src) {
+      if (!src?.length) {
         printError(`Required option ${chalk.blue('"src"')} is missing`);
         process.exit(1);
       }

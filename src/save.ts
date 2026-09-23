@@ -3,28 +3,34 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { printWarning } from './utils/print.ts';
 
+const readLocaleFile = (localeFilePath: string): Record<string, string> => {
+  if (!fs.existsSync(localeFilePath)) {
+    return {};
+  }
+
+  try {
+    return JSON.parse(fs.readFileSync(localeFilePath, 'utf-8'));
+  } catch (e: unknown) {
+    throw new Error(
+      `Unable to read ${localeFilePath}: ${(e as Error).message}. Fix the file and run again`,
+      { cause: e },
+    );
+  }
+};
+
 export const save = (locales: string[], keys: Set<string>, outDir: string) => {
   const freshTranslations = Object.fromEntries(keys.entries());
 
-  fs.mkdirSync(outDir, { recursive: true });
-
-  for (const locale of locales) {
+  // read every locale file up front, so a broken one aborts the run before anything is written
+  const localeFiles = locales.map((locale) => {
     const localeFilePath = path.join(outDir, `${locale}.json`);
 
-    let existingTranslations: Record<string, string> = {};
-    if (fs.existsSync(localeFilePath)) {
-      try {
-        existingTranslations = JSON.parse(fs.readFileSync(localeFilePath, 'utf-8'));
-      } catch (e: unknown) {
-        // keep going with an empty set, but the existing translations are lost
-        printWarning(
-          `Failed to parse ${chalk.blue(localeFilePath)}: ${(e as Error).message}. ` +
-            'Its translations will be recreated as empty.',
-          { newLinesBefore: 1, newLinesAfter: 1 },
-        );
-      }
-    }
+    return { localeFilePath, existingTranslations: readLocaleFile(localeFilePath) };
+  });
 
+  fs.mkdirSync(outDir, { recursive: true });
+
+  for (const { localeFilePath, existingTranslations } of localeFiles) {
     const allExistingKeys = Object.keys(existingTranslations);
     const allFreshKeys = Object.keys(freshTranslations);
 

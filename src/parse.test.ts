@@ -168,6 +168,32 @@ describe('file collection', () => {
   });
 });
 
+describe('no matching files', () => {
+  it('throws when the source pattern matches no files', async () => {
+    const dir = fs.mkdtempSync(path.join(tmpRoot, 'empty-'));
+
+    await assert.rejects(
+      parse([path.join(dir, '**/*.ts')], [], ['t', '$t']),
+      /No source files match/,
+    );
+  });
+
+  it('throws when every matching file is excluded', async () => {
+    const dir = fs.mkdtempSync(path.join(tmpRoot, 'all-excluded-'));
+    fs.mkdirSync(path.join(dir, 'dist'));
+    fs.writeFileSync(path.join(dir, 'dist', 'skipped.ts'), `$t('Skipped')`);
+
+    await assert.rejects(
+      parse([path.join(dir, '**/*.ts')], ['**/dist/**'], ['t', '$t']),
+      /No source files match/,
+    );
+  });
+
+  it('throws for an empty source list', async () => {
+    await assert.rejects(parse([], [], ['t', '$t']), /No source files match/);
+  });
+});
+
 describe('idempotency', () => {
   it('returns the same keys on a second run', async () => {
     const dir = fs.mkdtempSync(path.join(tmpRoot, 'idempotent-'));

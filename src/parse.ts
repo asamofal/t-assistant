@@ -11,6 +11,9 @@ export const parse = async (
 
   // collect target file paths
   const filePaths: string[] = await glob(src, { ignore: exclude, nodir: true });
+  if (filePaths.length === 0) {
+    throw new Error(`No source files match ${src.join(', ')}`);
+  }
 
   // collect file contents
   const fileContents = await Promise.all(
