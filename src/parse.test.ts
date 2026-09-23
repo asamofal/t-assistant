@@ -74,8 +74,8 @@ describe('call boundaries', () => {
 });
 
 describe('quotes inside keys', () => {
-  it('keeps an escaped quote raw', async () => {
-    assert.deepEqual(await extract(`$t('it\\'s here')\n$t('Next')`), [`it\\'s here`, 'Next']);
+  it('unescapes an escaped quote', async () => {
+    assert.deepEqual(await extract(`$t('it\\'s here')\n$t('Next')`), [`it's here`, 'Next']);
   });
 
   it('extracts an apostrophe inside a double-quoted key', async () => {
@@ -92,6 +92,50 @@ describe('quotes inside keys', () => {
 
   it('extracts a comma inside a key', async () => {
     assert.deepEqual(await extract(`$t('Hello, world')\n$t('Next')`), ['Hello, world', 'Next']);
+  });
+});
+
+describe('escape sequences', () => {
+  it('unescapes an escaped double quote', async () => {
+    assert.deepEqual(await extract(`$t("Say \\"hi\\"")`), ['Say "hi"']);
+  });
+
+  it('unescapes an escaped backtick', async () => {
+    assert.deepEqual(await extract('$t(`Use \\`code\\``)'), ['Use `code`']);
+  });
+
+  it('unescapes an escaped backslash', async () => {
+    assert.deepEqual(await extract(`$t('C:\\\\temp')`), ['C:\\temp']);
+  });
+
+  it('unescapes control characters', async () => {
+    assert.deepEqual(await extract(`$t('Line\\nBreak\\tTab')`), ['Line\nBreak\tTab']);
+  });
+
+  it('unescapes unicode and hex sequences', async () => {
+    assert.deepEqual(await extract(`$t('\\u00e5 \\u{1F600} \\x41')`), ['\u00e5 \u{1F600} A']);
+  });
+
+  it('keeps a key without escapes untouched', async () => {
+    assert.deepEqual(await extract(`$t('Plain / text')`), ['Plain / text']);
+  });
+});
+
+describe('template literals', () => {
+  it('skips a template literal with interpolation', async () => {
+    assert.deepEqual(await extract("$t(`Hi ${name}`)\n$t('Next')"), ['Next']);
+  });
+
+  it('skips a template literal with interpolation spanning lines', async () => {
+    assert.deepEqual(await extract("$t(`Hi\n${name}`)\n$t('Next')"), ['Next']);
+  });
+
+  it('extracts an escaped interpolation as literal text', async () => {
+    assert.deepEqual(await extract('$t(`Price \\${amount}`)'), ['Price ${amount}']);
+  });
+
+  it('extracts a template literal with a lone dollar sign', async () => {
+    assert.deepEqual(await extract('$t(`Costs $5`)'), ['Costs $5']);
   });
 });
 
@@ -157,6 +201,33 @@ describe('file collection', () => {
     assert.deepEqual([...keys], ['Kept']);
   });
 
+  it('accepts a single exclude pattern as a string', async () => {
+    const dir = fs.mkdtempSync(path.join(tmpRoot, 'exclude-string-'));
+    fs.writeFileSync(path.join(dir, 'kept.ts'), `$t('Kept')`);
+    fs.mkdirSync(path.join(dir, 'dist'));
+    fs.writeFileSync(path.join(dir, 'dist', 'skipped.ts'), `$t('Skipped')`);
+
+    const keys = await parse([path.join(dir, '**/*.ts')], '**/dist/**', ['t', '$t']);
+
+    assert.deepEqual([...keys], ['Kept']);
+  });
+
+  it('honours several exclude patterns', async () => {
+    const dir = fs.mkdtempSync(path.join(tmpRoot, 'exclude-many-'));
+    fs.writeFileSync(path.join(dir, 'kept.ts'), `$t('Kept')`);
+    fs.mkdirSync(path.join(dir, 'dist'));
+    fs.writeFileSync(path.join(dir, 'dist', 'skipped.ts'), `$t('Skipped')`);
+    fs.writeFileSync(path.join(dir, 'kept.spec.ts'), `$t('Spec')`);
+
+    const keys = await parse(
+      [path.join(dir, '**/*.ts')],
+      ['**/dist/**', '**/*.spec.ts'],
+      ['t', '$t'],
+    );
+
+    assert.deepEqual([...keys], ['Kept']);
+  });
+
   it('collects keys across several files', async () => {
     const dir = fs.mkdtempSync(path.join(tmpRoot, 'multi-'));
     fs.writeFileSync(path.join(dir, 'a.ts'), `$t('FromA')`);
@@ -165,6 +236,32 @@ describe('file collection', () => {
     const keys = await parse([path.join(dir, '**/*.ts')], [], ['t', '$t']);
 
     assert.deepEqual([...keys].sort(), ['FromA', 'FromB']);
+  });
+});
+
+describe('no matching files', () => {
+  it('throws when the source pattern matches no files', async () => {
+    const dir = fs.mkdtempSync(path.join(tmpRoot, 'empty-'));
+
+    await assert.rejects(
+      parse([path.join(dir, '**/*.ts')], [], ['t', '$t']),
+      /No source files match/,
+    );
+  });
+
+  it('throws when every matching file is excluded', async () => {
+    const dir = fs.mkdtempSync(path.join(tmpRoot, 'all-excluded-'));
+    fs.mkdirSync(path.join(dir, 'dist'));
+    fs.writeFileSync(path.join(dir, 'dist', 'skipped.ts'), `$t('Skipped')`);
+
+    await assert.rejects(
+      parse([path.join(dir, '**/*.ts')], ['**/dist/**'], ['t', '$t']),
+      /No source files match/,
+    );
+  });
+
+  it('throws for an empty source list', async () => {
+    await assert.rejects(parse([], [], ['t', '$t']), /No source files match/);
   });
 });
 

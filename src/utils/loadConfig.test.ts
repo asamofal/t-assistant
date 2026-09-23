@@ -17,12 +17,13 @@ const writeConfig = (contents: string): string => {
   return configPath;
 };
 
-const applyConfig = (contents: string): Command => {
+const applyConfig = (contents: string, cliArgs: string[] = []): Command => {
   const program = new Command();
   program
     .option('-s, --src <src...>')
     .option('-o, --out-dir <dir>')
-    .option('-l, --locales <locales...>', '', ['en']);
+    .option('-l, --locales <locales...>', '', ['en'])
+    .parse(cliArgs, { from: 'user' });
 
   applyOptionsFromConfig(program, writeConfig(contents));
 
@@ -54,6 +55,36 @@ describe('option loading', () => {
 
     assert.deepEqual(program.opts().src, []);
     assert.equal(program.opts().outDir, '');
+  });
+});
+
+describe('precedence', () => {
+  it('lets a CLI flag override the config value', () => {
+    const program = applyConfig('{"outDir":"from-config"}', ['-o', 'from-cli']);
+
+    assert.equal(program.opts().outDir, 'from-cli');
+  });
+
+  it('lets a variadic CLI flag override the config value', () => {
+    const program = applyConfig('{"locales":["en","nb"]}', ['-l', 'uk']);
+
+    assert.deepEqual(program.opts().locales, ['uk']);
+  });
+
+  it('lets the config override a default value', () => {
+    const program = applyConfig('{"locales":["en","nb"]}');
+
+    assert.deepEqual(program.opts().locales, ['en', 'nb']);
+  });
+
+  it('applies config values for flags not passed on the CLI', () => {
+    const program = applyConfig('{"src":["src/**/*.ts"],"outDir":"from-config"}', [
+      '-o',
+      'from-cli',
+    ]);
+
+    assert.deepEqual(program.opts().src, ['src/**/*.ts']);
+    assert.equal(program.opts().outDir, 'from-cli');
   });
 });
 

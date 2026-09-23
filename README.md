@@ -44,15 +44,17 @@ Then it can be called with: `npm run translate`.
 
 **t-assistant** supports two ways to provide options: via CLI parameters or a config file. 
 
-If the `--config` option provided, all other options will be loaded from the config file.
+If the `--config` option is provided, options are loaded from the config file. Flags passed on the command line take precedence over the config values.
+
+Paths are resolved relative to the current working directory, not to the config file.
 
 For more details, check out the config example: [t-assistant.example.json](t-assistant.example.json).
 
 - `-s, --src <src...>`: Glob pattern for source file paths (required)
 - `-o, --out-dir <dir>`: JSON locale files path (required)
-- `-e, --exclude <exclude>`: Glob pattern for paths to exclude
+- `-e, --exclude <exclude...>`: Glob pattern for paths to exclude
 - `-l, --locales <locales...>`: List of locales (default: `['en']`)
-- `-k, --keywords <keywords...>`: List of translation keys (default: `['t', '$t']`)
+- `-k, --keywords <keywords...>`: List of translation function names (default: `['t', '$t']`)
 - `-c, --config <config>`: Path to a config file
 - `-d, --debug`: Print debug information
 
@@ -67,8 +69,18 @@ For more details, check out the config example: [t-assistant.example.json](t-ass
 Extract translation keys from source files and save them to JSON files:
 
 ```sh
-t-assistant -s "src/**/*.ts" -o "locales" -l "en" "fr" -k "t" "$t"
+t-assistant -s "src/**/*.ts" -o "locales" -l "en" "fr" -k "t" '$t'
 ```
+
+Keep `$t` in single quotes — in double quotes the shell expands it to an empty string.
+
+## How it works
+
+- Keys are taken from calls with a string literal as the first argument: `t('key')`, `t("key")` or ``t(`key`)``. Calls with a variable or an interpolated template literal (``t(`Hi ${name}`)``) are skipped.
+- New keys are added with the key itself as the value, existing values are kept, and keys that no longer appear in the sources are removed.
+- Keys are sorted alphabetically, so the order is stable across runs and machines.
+- Locale files must be flat JSON objects (`{ "key": "value" }`). Nested objects are not supported — their top-level keys would be removed as unused.
+- The run fails without writing anything when the `src` pattern matches no files or a locale file is not valid JSON (e.g. it has unresolved git conflict markers).
 
 ## Credits
 

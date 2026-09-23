@@ -11,27 +11,27 @@ import { applyOptionsFromConfig } from './utils/loadConfig.ts';
 const program = new Command();
 
 program
-  .name('t-key-assistant')
+  .name('t-assistant')
   .description('Extract translation keys from source files and write them to JSON files.')
   .version(version);
 
 program
   .option('-s, --src <src...>', 'Glob pattern for source file paths')
   .option('-o, --out-dir <dir>', 'JSON locale files path')
-  .option('-e, --exclude <exclude>', 'Glob pattern for paths to exclude')
+  .option('-e, --exclude <exclude...>', 'Glob pattern for paths to exclude')
   .option('-l, --locales <locales...>', 'List of locales', ['en'])
-  .option('-k, --keywords <keywords...>', 'List of translation keys', ['t', '$t'])
+  .option('-k, --keywords <keywords...>', 'List of translation function names', ['t', '$t'])
   .option('-c, --config <config>', 'Path to a config file')
   .option('-d, --debug', 'Print debug information')
   // keyPrefix option is available only from the config file
   .action(async (options) => {
-    if (options.debug) {
-      printDebug(`Options: ${JSON.stringify(options)}`);
-    }
-
     try {
       if (options.config) {
         applyOptionsFromConfig(program, options.config);
+      }
+
+      if (options.debug) {
+        printDebug(`Options: ${JSON.stringify(program.opts())}`);
       }
 
       const start = performance.now();
@@ -39,7 +39,7 @@ program
       const { src, outDir, exclude, locales, keywords, keyPrefix } = program.opts();
 
       // validate required options
-      if (!src) {
+      if (!src?.length) {
         printError(`Required option ${chalk.blue('"src"')} is missing`);
         process.exit(1);
       }
