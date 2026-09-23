@@ -43,7 +43,7 @@
     "oxfmt": "^0.70.0",
     "oxlint": "^1.85.0",
     "tsup": "^8.5.1",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   },
   "dependencies": {
     "chalk": "^6.0.0",

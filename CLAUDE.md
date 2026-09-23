@@ -33,7 +33,7 @@ Errors bubble to the single try/catch in `index.ts`, which prints the message (p
 ## Gotchas
 
 - `version` is imported from `../package.json` with `resolveJsonModule`; tsup inlines it into the bundle.
-- The package ships only `dist/` and no type declarations — it is a CLI with no importable API. Don't re-add `--dts`: tsup's dts worker injects a deprecated `baseUrl` that TS 6 rejects.
+- The package ships only `dist/` and no type declarations — it is a CLI with no importable API. Don't re-add `--dts`: tsup's dts worker needs the JS compiler API, which TS 7 doesn't provide.
 
 ## Linting & formatting
 
